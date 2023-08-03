@@ -346,26 +346,67 @@ def find_insertion_points(boustrophedon_path, obstacle_path):
     return first_node, second_node
 
 #  δεν ειναι ακομα ετοιμη αυτη η συναρτηση
-def insert_obstacle_paths(coords, path):
-    # Iterate through the boustrophedon path
-    for i in range(len(path) - 1):
-        node1 = path[i]
-        node2 = path[i + 1]
+def insert_paths(main_path, paths_to_insert):
+    # Copy the main path to keep the original data
+    updated_path = main_path.copy()
 
-        # Check if node1 and node2 have the same x-coordinate and the obstacle is in between them
-        for obs_start, obs_end in coords:
-            if node1[0] == node2[0] and obs_start[1] < node1[1] and obs_end[1] > node2[1]:
-                # Insert the obstacle path into the boustrophedon path
-                path.insert(i + 1, obs_start)
-                path.insert(i + 2, obs_end)
+    for path in paths_to_insert:
+        # Get the first and last points of the path
+        first_point = path[0]
+        last_point = path[-1]
 
-    return path
+        # Initialize start and end insertion indices
+        start_insert_position = None
+        end_insert_position = None
+
+        # Loop over the updated path to find the matching points
+        for i in range(len(updated_path) - 1):
+            if (updated_path[i][1] <= first_point[1] < updated_path[i+1][1] and updated_path[i+1][1] > last_point[1] >= updated_path[i][1]) or (updated_path[i][1] >= first_point[1] > updated_path[i+1][1] and updated_path[i+1][1] < last_point[1] <= updated_path[i][1]):
+                if updated_path[i][0] == first_point[0] and updated_path[i+1][0] == last_point[0]:
+                    start_insert_position = i+1
+                    end_insert_position = i+2
+                    break
+
+        # Check if we found a match
+        if start_insert_position is None or end_insert_position is None:
+            print(f"No appropriate position found for insertion of path: {path}")
+            continue
+
+        # Now insert the path into the updated path at the correct positions
+        updated_path = updated_path[:start_insert_position] + path + updated_path[end_insert_position:]
+
+    return updated_path
 
 
+# Test the function
 
-# Call the function to insert the obstacle paths
-#new_boustrophedon_path = insert_obstacle_paths(matched_coords, all_paths)
-#print(new_boustrophedon_path)
+updated_path = insert_paths(matched_coords, all_paths)
+print(updated_path)
+
+
+import matplotlib.pyplot as plt
+
+
+def plot_path(main_path, inserted_paths):
+    # Unpack the main path into x and y coordinates for plotting
+    x_coords, y_coords = zip(*main_path)
+
+    # Create the plot
+    plt.figure(figsize=(10, 10))
+    plt.plot(x_coords, y_coords, '-o', color='blue')
+
+    # Plot each inserted path in a different color
+    colors = ['red', 'green', 'orange']  # Extend this list if you have more paths
+    for path, color in zip(inserted_paths, colors):
+        x_coords, y_coords = zip(*path)
+        plt.plot(x_coords, y_coords, '-o', color=color)
+
+    # Show the plot
+    plt.show()
+
+# Use the function
+plot_path(updated_path, all_paths)
+
 
 
 # Call the function to plot the DARP grid with nodes, path, intersection points, and obstacle vertices
