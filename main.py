@@ -1,4 +1,4 @@
-import math
+import matplotlib.patches as patches
 import random
 import sys
 import matplotlib.pyplot as plt
@@ -372,8 +372,13 @@ def insert_paths(main_path, paths_to_insert):
             print(f"No appropriate position found for insertion of path: {path}")
             continue
 
+        # Determine if the path should be reversed
+        if (updated_path[start_insert_position - 1][1] > updated_path[end_insert_position - 1][1] and first_point[1] < last_point[1]) or (updated_path[start_insert_position - 1][1] < updated_path[end_insert_position - 1][1] and first_point[1] > last_point[1]):
+            path = path[::-1]
+
         # Now insert the path into the updated path at the correct positions
-        updated_path = updated_path[:start_insert_position] + path + updated_path[end_insert_position:]
+        for i, point in enumerate(path):
+            updated_path.insert(start_insert_position + i, point)
 
     return updated_path
 
@@ -384,29 +389,37 @@ updated_path = insert_paths(matched_coords, all_paths)
 print(updated_path)
 
 
-import matplotlib.pyplot as plt
 
 
-def plot_path(main_path, inserted_paths):
+def plot_path(main_path, inserted_paths, polygon_coords, obstacle_coords):
     # Unpack the main path into x and y coordinates for plotting
     x_coords, y_coords = zip(*main_path)
 
     # Create the plot
-    plt.figure(figsize=(10, 10))
-    plt.plot(x_coords, y_coords, '-o', color='blue')
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    # Plot the main path
+    ax.plot(x_coords, y_coords, '-o', color='blue')
 
     # Plot each inserted path in a different color
     colors = ['red', 'green', 'orange']  # Extend this list if you have more paths
     for path, color in zip(inserted_paths, colors):
         x_coords, y_coords = zip(*path)
-        plt.plot(x_coords, y_coords, '-o', color=color)
+        ax.plot(x_coords, y_coords, '-o', color=color)
+
+    # Create a polygon for the outer boundary and add it to the plot
+    poly = patches.Polygon(polygon_coords, fill=None, edgecolor='purple')
+    ax.add_patch(poly)
+
+    # Create a polygon for the obstacle and add it to the plot
+    obstacle_poly = patches.Polygon(obstacle_coords[0], fill=True, color='grey', alpha=0.5)
+    ax.add_patch(obstacle_poly)
 
     # Show the plot
     plt.show()
 
 # Use the function
-plot_path(updated_path, all_paths)
-
+plot_path(updated_path, all_paths, cart1, cartObst1)
 
 
 # Call the function to plot the DARP grid with nodes, path, intersection points, and obstacle vertices
