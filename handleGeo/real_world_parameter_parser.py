@@ -88,6 +88,51 @@ class real_world:
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 
+
+        cartObst = [[] for _ in range(len(self.obstNED))]
+
+        for i in range(len(self.obstNED)):
+            cartObst[i] = self.rotate.rotatePolygon(self.obstNED[i])
+
+        print(f"Time needed to find the optimal solution: {time.time() - start} seconds")
+        print(f"-  theta: {self.theta}")
+        print(f"- Optimal shift in X axis: {self.shiftX}")
+        print(f"- Optimal shift in Y axis: {self.shiftY}")
+
+        # Build grid for paths
+        NodesInPoly_var = NodesInPoly(cart, cartObst, scanDist=self.scanDist,
+                                      pathsStrictlyInPoly=self.pathsStrictlyInPoly,
+                                      hideInfo=False, shiftX=self.shiftX, shiftY=self.shiftY)
+
+        megaNodesIn = NodesInPoly_var.getMegaNodesInCount()
+        self.megaNodes = NodesInPoly_var.getMegaNodes()
+        self.subNodes = NodesInPoly_var.getSubNodes()
+
+        print(f"User's defined polygon area: {NodesInPoly_var.getPolygonArea()} square meters")
+        return [cart , cartObst]
+    def geo2cart2(self):
+        # Convert geographical to local cartesian coordinates
+        self.NED_Coords = ConvCoords(self.geoCoords, self.geoObstacles).polygonWGS84ToNED()
+
+        if len(self.geoObstacles) > 0:
+            self.obstNED = ConvCoords(self.geoCoords, self.geoObstacles).obstaclesToNED()
+        else:
+            self.obstNED = []  # [np.complex64(x) for x in range(0)]
+
+        # Rotation and shift optimization (SimulatedAnnealing)
+        start = time.time()
+        optimalParameters = SimulatedAnnealing()
+        optimalParameters.run(self.NED_Coords, self.obstNED, self.scanDist)
+
+        self.rotate = Rotate()
+        self.theta = 90
+        self.shiftX = optimalParameters.getOptimalShiftX()
+        self.shiftY = optimalParameters.getOptimalShiftY()
+        self.rotate.setTheta(self.theta)
+        cart = self.rotate.rotatePolygon(self.NED_Coords)
+
+
+
         cartObst = [[] for _ in range(len(self.obstNED))]
 
         for i in range(len(self.obstNED)):
