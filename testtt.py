@@ -1,3 +1,7 @@
+
+# to main trexoyme
+
+
 import matplotlib.patches as patches
 import random
 import sys
