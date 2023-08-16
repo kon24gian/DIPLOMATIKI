@@ -102,16 +102,14 @@ randomInitPos = True
 count = 0
 
 real_world_parameters = real_world()
-print ("Geocoords :", real_world_parameters.geoCoords)
-print ("Geoobstacles :", real_world_parameters.geoObstacles)
-print ("Drone position:", real_world_parameters.initial_positions)
+print("Geocoords :", real_world_parameters.geoCoords)
+print("Geoobstacles :", real_world_parameters.geoObstacles)
+print("Drone position:", real_world_parameters.initial_positions)
 
 [cart1, cartObst1] = real_world_parameters.geo2cart()
-a = real_world_parameters.megaNodes
 print("Cart1:", cart1)
 print("CartObst: ", cartObst1)
 print("MegaNodes: ", real_world_parameters.megaNodes)
-
 
 rows, cols, obstacles_positions = real_world_parameters.get_DARP_params()
 print("Rows are:" , rows, "Cols are:", cols)
@@ -125,10 +123,7 @@ DARPgrid = initializeDARPGrid(randomInitPos, rows, cols, real_world_parameters.i
 
 print( DARPgrid)
 
-
 obstacles = [(i, j) for i in range(DARPgrid.shape[0]) for j in range(DARPgrid.shape[1]) if DARPgrid[i][j] == 1]
-
-
 
 def boustrophedonTraversal(DARPgrid, obstacles):
     rows, cols = DARPgrid.shape
@@ -152,7 +147,6 @@ vertices = obstacle_polygon.tolist()
 print("Vertices of the obstacle polygon:")
 for vertex in vertices:
     print(vertex)
-
 
 # Example usage
 free_nodes_path = boustrophedonTraversal(DARPgrid,obstacles)
@@ -291,7 +285,6 @@ def find_minimum_distance_path(pair, obstacle_polygon):
     # Return the shortest path
     return path1 if length1 < length2 else path2
 
-
 def print_path_info(pair, path):
     start_point = pair[0]
     end_point = pair[1]
@@ -336,20 +329,6 @@ for i in range(0, len(intersection_points), 2):
 
 
 print(all_paths)
-
-def find_insertion_points(boustrophedon_path, obstacle_path):
-    start_x = obstacle_path[0][0][0]
-    end_x = obstacle_path[-1][0][0]
-
-    first_node, second_node = None, None
-    for node in boustrophedon_path:
-        if node[0] == start_x:
-            first_node = node
-        if node[0] == end_x:
-            second_node = node
-
-    return first_node, second_node
-
 def insert_paths(main_path, paths_to_insert):
     # Copy the main path to keep the original data
     updated_path = main_path.copy()
@@ -386,11 +365,9 @@ def insert_paths(main_path, paths_to_insert):
 
     return updated_path
 
-
 # Test the function
 updated_path = insert_paths(matched_coords, all_paths)
 print(updated_path)
-
 
 def plot_path(main_path, inserted_paths, polygon_coords, obstacle_coords):
     # Unpack the main path into x and y coordinates for plotting
@@ -403,7 +380,7 @@ def plot_path(main_path, inserted_paths, polygon_coords, obstacle_coords):
     ax.plot(x_coords, y_coords, '-o', color='blue')
 
     # Plot each inserted path in a different color
-    colors = ['red', 'green', 'orange']  # Extend this list if you have more paths
+    colors = ['red', 'green', 'orange', 'purple', 'black', 'pink']  # Extend this list if you have more paths
     for path, color in zip(inserted_paths, colors):
         x_coords, y_coords = zip(*path)
         ax.plot(x_coords, y_coords, '-o', color=color)
@@ -422,13 +399,11 @@ def plot_path(main_path, inserted_paths, polygon_coords, obstacle_coords):
 # Use the function
 plot_path(updated_path, all_paths, cart1, cartObst1)
 
-
 # Call the function to plot the DARP grid with nodes, path, intersection points, and obstacle vertices
 plotDARPGridWithNodesAndPath(cart1, cartObst1, real_world_parameters.megaNodes, free_nodes_path, intersection_points, obstacle_polygon)
 
 wgs_coords = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([updated_path])
 print("wgs_coords are: ", wgs_coords)
-
 
 def rotateBackWaypoints(optimalTheta, iWaypoints):
     minusTheta = -optimalTheta
@@ -445,7 +420,6 @@ def rotateBackWaypoints(optimalTheta, iWaypoints):
 
     return waypoints
 
-
 [cart2, cartObst2] = real_world_parameters.geo2cart2()
 
 print("Cart2:", cart2)
@@ -454,26 +428,21 @@ print("MegaNodes: ", real_world_parameters.megaNodes)
 
 
 rows, cols, obstacles_positions = real_world_parameters.get_DARP_params()
-
 DARPgrid_r = initializeDARPGrid(randomInitPos, rows, cols, real_world_parameters.initial_positions,
                           real_world_parameters.megaNodes,
                            real_world_parameters.theta, real_world_parameters.shiftX,
                            real_world_parameters.shiftY,
                            real_world_parameters.droneNo)
 
-
 print(DARPgrid_r)
 
-
 obstacles_r = [(i, j) for i in range(DARPgrid_r.shape[0]) for j in range(DARPgrid_r.shape[1]) if DARPgrid_r[i][j] == 1]
-
 
 obstacle_polygon = cartObst2[0] # Assuming there is only one obstacle polygon
 vertices = obstacle_polygon.tolist()
 print("Vertices of the obstacle polygon:")
 for vertex in vertices:
     print(vertex)
-
 
 # Example usage
 free_nodes_path_r = boustrophedonTraversal(DARPgrid_r,obstacles_r)
@@ -484,8 +453,6 @@ print(free_nodes_path_r)
 matched_coords_r = get_matched_free_nodes_path(free_nodes_path_r, real_world_parameters.megaNodes)
 print(matched_coords_r)
 
-
-
 grid_lines_r = extract_x_coordinates(real_world_parameters.megaNodes)
 print("Grid Lines:")
 print(grid_lines)
@@ -495,46 +462,7 @@ print("Intersection Points:")
 for point in intersection_points:
     print(point)
 
-
-
-
-
-def print_path_info(pair, path):
-    start_point = pair[0]
-    end_point = pair[1]
-
-    print(f"Start Point: {start_point}")
-    print(f"End Point: {end_point}")
-    print("Vertices:")
-    for vertex in path[1:-1]:
-        print(vertex)
-    print()
-
-
-
-
-def plot_points_and_path(pair, path, obstacle_polygon):
-    fig, ax = plt.subplots()
-
-    # Plot obstacle polygon
-    x, y = zip(*obstacle_polygon)
-    ax.plot(x + (x[0],), y + (y[0],), 'k-', label='Obstacle Polygon')
-
-    # Plot pair points
-    x_pair, y_pair = zip(*pair)
-    ax.scatter(x_pair, y_pair, color='red', label='Pair Points')
-
-    # Plot path
-    x_path, y_path = zip(*path)
-    ax.plot(x_path, y_path, 'g-', label='Minimum Distance Path')
-
-    ax.legend()
-    plt.show()
-
 obstacle_polygon = cartObst2[0].tolist()
-
-
-
 
 # Create a list to store all paths of intersection points
 all_paths_r = []
@@ -550,27 +478,17 @@ for i in range(0, len(intersection_points), 2):
 
 print(all_paths_r)
 
-
-
 # Test the function
 updated_path_r = insert_paths(matched_coords_r, all_paths_r)
 print("updated_path_r",updated_path_r)
-
-
 
 # Use the function
 plot_path(updated_path_r, all_paths_r, cart2, cartObst2)
 
 
-# Call the function to plot the DARP grid with nodes, path, intersection points, and obstacle vertices
-#plotDARPGridWithNodesAndPath(cart1, cartObst1, real_world_parameters.megaNodes, free_nodes_path, intersection_points, obstacle_polygon)
-
-wgs_coords_r = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([updated_path_r])
-
-
-
 rotated_p = rotateBackWaypoints(real_world_parameters.theta, updated_path_r)
 print("rotated_path" , rotated_p)
+wgs_coords_r = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([rotated_p])
 
 
 # Split paths into X and Y components
