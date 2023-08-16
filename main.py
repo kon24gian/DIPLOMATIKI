@@ -1,14 +1,14 @@
 import matplotlib.patches as patches
 import random
 import sys
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 sys.path.append('DARP')
 from handleGeo.ConvCoords import ConvCoords
 from nodesPlacementOptimization.Rotate import Rotate
 from handleGeo import Dist
 from handleGeo.real_world_parameter_parser import real_world
-
+import math
 def plotDARPGridWithNodesAndPath(cart, cartObst, megaNodes, path, intersection_points, obstacle_polygon):
     # Plot DARP grid
     plt.figure()
@@ -98,7 +98,6 @@ def initializeDARPGrid(randomInitPos, l, m, initialPos, megaNodes, theta, shiftX
     DARPgrid[DARPgrid == 2] = 0
     return DARPgrid
 
-
 randomInitPos = True
 count = 0
 
@@ -107,14 +106,11 @@ print ("Geocoords :", real_world_parameters.geoCoords)
 print ("Geoobstacles :", real_world_parameters.geoObstacles)
 print ("Drone position:", real_world_parameters.initial_positions)
 
-
 [cart1, cartObst1] = real_world_parameters.geo2cart()
+a = real_world_parameters.megaNodes
 print("Cart1:", cart1)
 print("CartObst: ", cartObst1)
 print("MegaNodes: ", real_world_parameters.megaNodes)
-a = real_world_parameters.megaNodes
-print(a)
-
 
 
 rows, cols, obstacles_positions = real_world_parameters.get_DARP_params()
@@ -122,12 +118,13 @@ print("Rows are:" , rows, "Cols are:", cols)
 
 
 DARPgrid = initializeDARPGrid(randomInitPos, rows, cols, real_world_parameters.initial_positions,
-                           a,
+                           real_world_parameters.megaNodes,
                            real_world_parameters.theta, real_world_parameters.shiftX,
                            real_world_parameters.shiftY,
                            real_world_parameters.droneNo)
 
 print( DARPgrid)
+
 
 obstacles = [(i, j) for i in range(DARPgrid.shape[0]) for j in range(DARPgrid.shape[1]) if DARPgrid[i][j] == 1]
 
@@ -176,14 +173,12 @@ def get_matched_free_nodes_path(matched_free_nodes_path, megaNodes):
 matched_coords = get_matched_free_nodes_path(free_nodes_path, real_world_parameters.megaNodes)
 print(matched_coords)
 
-
 def extract_x_coordinates(megaNodes):
     x_coordinates = set()
     for row in megaNodes:
         for node in row:
             x_coordinates.add(node[0])
     return list(x_coordinates)
-
 
 grid_lines = extract_x_coordinates(real_world_parameters.megaNodes)
 print("Grid Lines:")
@@ -209,8 +204,6 @@ def find_intersection_points(lines, obstacle_polygon):
 
     return intersection_points
 
-
-
 intersection_points = find_intersection_points(grid_lines, obstacle_polygon)
 print("Intersection Points:")
 for point in intersection_points:
@@ -226,21 +219,29 @@ def path_length(path):
     return length
 def dist(p1, p2):
     return ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** 0.5
-
-def find_vertex_connecting_point(point, obstacle_polygon):
-    for i in range(len(obstacle_polygon)):
-        p1 = obstacle_polygon[i]
-        p2 = obstacle_polygon[(i + 1) % len(obstacle_polygon)]
-        if point_on_line_segment(point, p1, p2):
-            if dist(point, p1) < dist(point, p2):
-                return p1
-            else:
-                return p2
-    return None
+def insert_intersection(polygon, p1, p2, intersection):
+    index = polygon.index(p1)
+    next_vertex = polygon[(index + 1) % len(polygon)]
+    if next_vertex == p2:
+        polygon.insert(index + 1, intersection)
+    else:
+        polygon.insert(index, intersection)
+    return polygon
 
 def point_on_line_segment(point, p1, p2):
     return min(p1[0], p2[0]) <= point[0] <= max(p1[0], p2[0]) and min(p1[1], p2[1]) <= point[1] <= max(p1[1], p2[1])
 
+def closest_vertex_to_point(point, obstacle_polygon):
+    return min(obstacle_polygon, key=lambda vertex: dist(point, vertex))
+def get_edge_from_intersection(point, obstacle_polygon):
+    """Returns the edge (as a tuple of two vertices) of the obstacle_polygon
+    that is intersected by the point."""
+    for i in range(len(obstacle_polygon)):
+        p1 = obstacle_polygon[i]
+        p2 = obstacle_polygon[(i + 1) % len(obstacle_polygon)]
+        if point_on_line_segment(point, p1, p2):
+            return (p1, p2)
+    return None
 
 def find_vertices_on_perimeter(start_vertex, end_vertex, obstacle_polygon):
     vertices_cw = []
@@ -269,12 +270,17 @@ def find_vertices_on_perimeter(start_vertex, end_vertex, obstacle_polygon):
 def find_minimum_distance_path(pair, obstacle_polygon):
     start_point, end_point = pair[0], pair[1]
 
-    # Find the vertices on the polygon that connect the start and end points
-    start_vertex = find_vertex_connecting_point(start_point, obstacle_polygon)
-    end_vertex = find_vertex_connecting_point(end_point, obstacle_polygon)
+    # Assuming you have a function that gives you the edge for each intersection
+    start_edge = get_edge_from_intersection(start_point, obstacle_polygon)
+    end_edge = get_edge_from_intersection(end_point, obstacle_polygon)
+
+    # Insert the intersection points into our polygon vertices list
+    new_polygon = list(obstacle_polygon)  # Create a copy
+    insert_intersection(new_polygon, start_edge[0], start_edge[1], start_point)
+    insert_intersection(new_polygon, end_edge[0], end_edge[1], end_point)
 
     # Create paths in both directions and calculate their lengths
-    vertices_cw, vertices_ccw = find_vertices_on_perimeter(start_vertex, end_vertex, obstacle_polygon)
+    vertices_cw, vertices_ccw = find_vertices_on_perimeter(start_point, end_point, new_polygon)
 
     path1 = [start_point] + vertices_cw + [end_point]
     length1 = path_length(path1)
@@ -418,9 +424,183 @@ plot_path(updated_path, all_paths, cart1, cartObst1)
 
 
 # Call the function to plot the DARP grid with nodes, path, intersection points, and obstacle vertices
-#plotDARPGridWithNodesAndPath(cart1, cartObst1, real_world_parameters.megaNodes, free_nodes_path, intersection_points, obstacle_polygon)
+plotDARPGridWithNodesAndPath(cart1, cartObst1, real_world_parameters.megaNodes, free_nodes_path, intersection_points, obstacle_polygon)
 
 wgs_coords = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([updated_path])
 print("wgs_coords are: ", wgs_coords)
+
+
+def rotateBackWaypoints(optimalTheta, iWaypoints):
+    minusTheta = -optimalTheta
+
+    l = len(iWaypoints)
+    waypoints = []
+
+    for i in range(l):
+        a = iWaypoints[i][0] * math.cos(math.radians(minusTheta)) - iWaypoints[i][1] * math.sin(
+            math.radians(minusTheta))
+        b = iWaypoints[i][0] * math.sin(math.radians(minusTheta)) + iWaypoints[i][1] * math.cos(
+            math.radians(minusTheta))
+        waypoints.append([a, b])
+
+    return waypoints
+
+
+[cart2, cartObst2] = real_world_parameters.geo2cart2()
+
+print("Cart2:", cart2)
+print("CartObst: ", cartObst2)
+print("MegaNodes: ", real_world_parameters.megaNodes)
+
+
+rows, cols, obstacles_positions = real_world_parameters.get_DARP_params()
+
+DARPgrid_r = initializeDARPGrid(randomInitPos, rows, cols, real_world_parameters.initial_positions,
+                          real_world_parameters.megaNodes,
+                           real_world_parameters.theta, real_world_parameters.shiftX,
+                           real_world_parameters.shiftY,
+                           real_world_parameters.droneNo)
+
+
+print(DARPgrid_r)
+
+
+obstacles_r = [(i, j) for i in range(DARPgrid_r.shape[0]) for j in range(DARPgrid_r.shape[1]) if DARPgrid_r[i][j] == 1]
+
+
+obstacle_polygon = cartObst2[0] # Assuming there is only one obstacle polygon
+vertices = obstacle_polygon.tolist()
+print("Vertices of the obstacle polygon:")
+for vertex in vertices:
+    print(vertex)
+
+
+# Example usage
+free_nodes_path_r = boustrophedonTraversal(DARPgrid_r,obstacles_r)
+print("Free Nodes Path:")
+print(free_nodes_path_r)
+
+# Call the function to get the matched free nodes path
+matched_coords_r = get_matched_free_nodes_path(free_nodes_path_r, real_world_parameters.megaNodes)
+print(matched_coords_r)
+
+
+
+grid_lines_r = extract_x_coordinates(real_world_parameters.megaNodes)
+print("Grid Lines:")
+print(grid_lines)
+
+intersection_points = find_intersection_points(grid_lines_r, obstacle_polygon)
+print("Intersection Points:")
+for point in intersection_points:
+    print(point)
+
+
+
+
+
+def print_path_info(pair, path):
+    start_point = pair[0]
+    end_point = pair[1]
+
+    print(f"Start Point: {start_point}")
+    print(f"End Point: {end_point}")
+    print("Vertices:")
+    for vertex in path[1:-1]:
+        print(vertex)
+    print()
+
+
+
+
+def plot_points_and_path(pair, path, obstacle_polygon):
+    fig, ax = plt.subplots()
+
+    # Plot obstacle polygon
+    x, y = zip(*obstacle_polygon)
+    ax.plot(x + (x[0],), y + (y[0],), 'k-', label='Obstacle Polygon')
+
+    # Plot pair points
+    x_pair, y_pair = zip(*pair)
+    ax.scatter(x_pair, y_pair, color='red', label='Pair Points')
+
+    # Plot path
+    x_path, y_path = zip(*path)
+    ax.plot(x_path, y_path, 'g-', label='Minimum Distance Path')
+
+    ax.legend()
+    plt.show()
+
+obstacle_polygon = cartObst2[0].tolist()
+
+
+
+
+# Create a list to store all paths of intersection points
+all_paths_r = []
+
+# Iterate through each pair of points and find the shortest path
+for i in range(0, len(intersection_points), 2):
+    pair = intersection_points[i:i + 2]
+    path = find_minimum_distance_path(pair, obstacle_polygon)
+    all_paths_r.append(path)  # Append the path to the list of all_paths
+    print_path_info(pair, path)
+    plot_points_and_path(pair, path, obstacle_polygon)
+
+
+print(all_paths_r)
+
+
+
+# Test the function
+updated_path_r = insert_paths(matched_coords_r, all_paths_r)
+print("updated_path_r",updated_path_r)
+
+
+
+# Use the function
+plot_path(updated_path_r, all_paths_r, cart2, cartObst2)
+
+
+# Call the function to plot the DARP grid with nodes, path, intersection points, and obstacle vertices
+#plotDARPGridWithNodesAndPath(cart1, cartObst1, real_world_parameters.megaNodes, free_nodes_path, intersection_points, obstacle_polygon)
+
+wgs_coords_r = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([updated_path_r])
+
+
+
+rotated_p = rotateBackWaypoints(real_world_parameters.theta, updated_path_r)
+print("rotated_path" , rotated_p)
+
+
+# Split paths into X and Y components
+x1, y1 = zip(*rotated_p)
+x2, y2 = zip(*updated_path)
+
+# Extracting the X and Y coordinates of the polygon 'Cart1'
+x3, y3 = zip(*cart1)
+x3 = x3 + (x3[0],)  # Appending the first x-coordinate to close the polygon
+y3 = y3 + (y3[0],)  # Appending the first y-coordinate to close the polygon
+
+plt.figure()
+
+# Plot the two paths
+plt.plot(x1, y1, label='Rotated Path', color='blue')
+plt.plot(x2, y2, label='Updated Path', color='red')
+
+# Plot the polygon 'Cart1'
+plt.plot(x3, y3, label='Cart1 Polygon', color='green', linestyle='--', marker='o')
+
+# Optional: Add titles, labels, etc.
+plt.title('Coverage Path Planning')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.legend()
+plt.grid(True)
+
+# Setting equal scaling for the axes
+plt.axis('equal')
+plt.show()
+
 
 
