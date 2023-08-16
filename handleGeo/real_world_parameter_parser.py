@@ -32,7 +32,7 @@ class real_world:
         self.real_world_parameters()
 
     def real_world_parameters(self):
-        file = open('inputVariables_choosepath.json')
+        file = open('inputVariables_choosepath2.json')
         data = json.load(file)
 
         self.geoCoords = []
