@@ -9,6 +9,10 @@ from nodesPlacementOptimization.Rotate import Rotate
 from handleGeo import Dist
 from handleGeo.real_world_parameter_parser import real_world
 import math
+from itertools import chain
+import json
+from collections import Counter
+from datetime import datetime
 def plotDARPGridWithNodesAndPath(cart, cartObst, megaNodes, path, intersection_points, obstacle_polygon):
     # Plot DARP grid
     plt.figure()
@@ -275,6 +279,8 @@ def find_minimum_distance_path(pair, obstacle_polygon):
 
     # Create paths in both directions and calculate their lengths
     vertices_cw, vertices_ccw = find_vertices_on_perimeter(start_point, end_point, new_polygon)
+    vertices_cw = [point for point in vertices_cw if point != start_point and point != end_point]
+    vertices_ccw = [point for point in vertices_ccw if point != start_point and point != end_point]
 
     path1 = [start_point] + vertices_cw + [end_point]
     length1 = path_length(path1)
@@ -367,6 +373,7 @@ def insert_paths(main_path, paths_to_insert):
 
 # Test the function
 updated_path = insert_paths(matched_coords, all_paths)
+
 print(updated_path)
 
 def plot_path(main_path, inserted_paths, polygon_coords, obstacle_coords):
@@ -405,6 +412,12 @@ plotDARPGridWithNodesAndPath(cart1, cartObst1, real_world_parameters.megaNodes, 
 wgs_coords = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([updated_path])
 print("wgs_coords are: ", wgs_coords)
 
+
+
+# Flatten the list and convert inner lists to tuples
+all_paths = [tuple(point) if isinstance(point, list) else point for sublist in all_paths for point in sublist]
+
+wgs_coords_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([all_paths])
 def rotateBackWaypoints(optimalTheta, iWaypoints):
     minusTheta = -optimalTheta
 
@@ -491,6 +504,12 @@ print("rotated_path" , rotated_p)
 wgs_coords_r = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([rotated_p])
 
 
+# Flatten the list and convert inner lists to tuples
+all_paths_r = [tuple(point) if isinstance(point, list) else point for sublist in all_paths_r for point in sublist]
+all_paths_r = rotateBackWaypoints(real_world_parameters.theta , all_paths_r)
+wgs_coords_r_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([all_paths_r])
+
+
 # Split paths into X and Y components
 x1, y1 = zip(*rotated_p)
 x2, y2 = zip(*updated_path)
@@ -520,5 +539,135 @@ plt.grid(True)
 plt.axis('equal')
 plt.show()
 
+#JSON FILE
+# Prepare the list of points as dictionaries
 
 
+
+obstacle_polygon = list(chain.from_iterable(real_world_parameters.geoObstacles))
+
+# Convert geocoords and geoobstacles to the desired format
+area_polygon = [{"lat": lat, "lng": lng} for [lat, lng] in real_world_parameters.geoCoords]
+obstacle_polygon = [{"lat": lat, "lng": lng} for [lat, lng] in obstacle_polygon]
+
+# Aggregate them into a list under "polygons"
+polygons = [
+    {"points": area_polygon},
+    {"points": obstacle_polygon}
+]
+
+paths = [
+    {"points": wgs_coords},
+    {"points": wgs_coords_r}
+]
+
+# Prepare the final JSON structure
+json_data = {
+    "sender": "Alert-driven_UAV_path_planning",
+    "dateTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
+    "horizontal_speed": 5,
+    "paths": paths,  # Use the updated paths list here
+    "polygons": polygons  # Add the polygons here
+}
+
+
+# Convert dictionary to JSON string
+json_string = json.dumps(json_data, indent=4)
+
+# Optionally, write to a file
+with open("visualize_path_data.json", "w") as f:
+    f.write(json_string)
+
+# Print JSON string
+print(json_string)
+
+
+
+
+
+
+# Flatten and make points unique (assumes your lists are similarly nested)
+flat_wgs_coords_r_obst_paths = {tuple(point) for sublist in wgs_coords_r_obst_paths for point in sublist}
+flat_wgs_coords_obst_paths = {tuple(point) for sublist in wgs_coords_obst_paths for point in sublist}
+
+# Flatten wgs_coords and wgs_coords_r
+flat_wgs_coords_r = [point for sublist in wgs_coords_r for point in sublist]
+flat_wgs_coords = [point for sublist in wgs_coords for point in sublist]
+
+# Generate total_path_combined
+total_path_combined = flat_wgs_coords_r +flat_wgs_coords
+
+# Count occurrences of each point
+point_counter = Counter(map(tuple, total_path_combined))
+
+# Debug counters
+count_falses = 0
+count_trues = 0
+
+total_path_combined_with_flags = []
+
+# Add flags to each point in total_path_combined
+for point in total_path_combined:
+    flag = True
+    point_tuple = tuple(point)
+    if point_tuple in flat_wgs_coords_r_obst_paths:
+        print(f"Found in flat_wgs_coords_r_obst_paths: {point}, Count: {point_counter[point_tuple]}")
+        flag = False
+        count_falses += 1
+    elif point_tuple in flat_wgs_coords_obst_paths:
+        print(f"Found in flat_wgs_coords_obst_paths: {point}, Count: {point_counter[point_tuple]}")
+        flag = False
+        count_falses += 1
+    else:
+        count_trues += 1
+    total_path_combined_with_flags.append([*point, flag])
+
+print(f"Total False Count: {count_falses}")
+print(f"Total True Count: {count_trues}")
+
+
+# Now total_path_combined_with_flags should contain the points with flags
+print(total_path_combined_with_flags)
+
+
+
+paths = []
+path_id = 0  # Assuming a single path, you could loop over multiple paths and increment this
+
+# Convert your coordinates into the desired format
+waypoints = []
+for lat, lng, photo in total_path_combined_with_flags:
+    waypoints.append({
+        "latitude": lat,
+        "longitude": lng,
+        "altitude": real_world_parameters.altitude,
+        "heading": None,
+        "photo": photo
+    })
+
+# Create a path dictionary for this pathID
+path_dict = {
+    "pathID": path_id,
+    "photomode": "viewpoint",  # Replace with your actual data if available
+    "waypoints": waypoints
+}
+
+paths.append(path_dict)
+
+# Prepare the final JSON structure
+json_data = {
+    "sender": "Alert-driven_UAV_path_planning",
+    "dateTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
+    "horizontal_speed": 5,
+    "paths": paths  # Add the paths
+}
+
+# Convert dictionary to JSON string
+json_string = json.dumps(json_data, indent=4)
+
+# Optionally, write to a file
+with open("path_data.json", "w") as f:
+    f.write(json_string)
+
+# Print JSON string
+print(json_string)
