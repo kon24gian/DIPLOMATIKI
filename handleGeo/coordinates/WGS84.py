@@ -1,8 +1,4 @@
 ﻿import math
-
-
-import math
-
 from handleGeo.coordinates.ECEF import ECEF
 from handleGeo.coordinates.NED import NED
 
@@ -23,16 +19,6 @@ class WGS84_class:
 SEMI_MAJOR_AXIS = 6378137.0
 FIRST_ECCENTRICITY_SQUARED = 0.00669437999013
 
-
-def distance(pointA, pointB):
-    ecefA = toECEF(pointA)
-    ecefB = toECEF(pointB)
-
-    x = ecefA.x - ecefB.x
-    y = ecefA.y - ecefB.y
-    z = ecefA.z - ecefB.z
-
-    return math.sqrt(x * x + y * y + z * z)
 
 
 def displacement(pointA, pointB):

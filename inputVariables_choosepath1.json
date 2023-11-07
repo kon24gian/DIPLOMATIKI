@@ -1,10 +1,10 @@
 {
-  "droneNo": 1,
   "altitude": 44.72,
   "sidelap": 70,
+  "frontlap" : 70,
   "polygon": [
     {
-      "lat":  40.93671,
+      "lat": 40.93671,
       "long": 24.40961
     },
     {
@@ -16,14 +16,14 @@
       "long": 24.41579
     },
     {
-      "lat":  40.94107,
-      "long":24.41203
+      "lat": 40.94107,
+      "long": 24.41203
     }
   ],
   "obstacles": [
     [
       {
-        "lat": 40.93731 ,
+        "lat": 40.93680,
         "long": 24.41169
       },
       {
@@ -33,25 +33,7 @@
       {
         "lat": 40.93762,
         "long": 24.41322
-      },
-      {
-        "lat":40.93861,
-        "long": 24.41265
       }
     ]
-  ],
-  "pathsStrictlyInPoly": true,
-  "OptimalInitPos": false,
-  "initialPos":
-  [
-    {
-      "lat": 40.93634,
-      "long": 24.41145
-    }
-  ],
-  "rPortions":
-  [
-   1
   ]
 }
-

@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 sys.path.append('DARP')
 from handleGeo.ConvCoords import ConvCoords
 from handleGeo.real_world_parameter_parser import real_world
-import math
 from itertools import chain
 import json
 from collections import Counter
@@ -56,11 +55,11 @@ def plotDARPGridWithNodesAndPath(cart, cartObst, megaNodes, path, intersection_p
     plt.title('DARP Grid with Nodes and Path')
     plt.legend()
     plt.show()
-def initializeDARPGrid( megaNodes):
-        DARPgrid = megaNodes[:, :, 2].astype(int)
+def initializeDARPGrid(megaNodes):
+    DARPgrid = megaNodes[:, :, 2].astype(int)
 
+    return DARPgrid
 
-        return DARPgrid
 
 randomInitPos = True
 count = 0
@@ -81,6 +80,7 @@ print("Rows are:" , rows, "Cols are:", cols)
 
 DARPgrid = initializeDARPGrid(
                            real_world_parameters.megaNodes)
+
 
 print( DARPgrid)
 
@@ -104,11 +104,7 @@ def boustrophedonTraversal(DARPgrid, obstacles):
     return path
 
 
-obstacle_polygon = cartObst1[0] # Assuming there is only one obstacle polygon
-vertices = obstacle_polygon.tolist()
-print("Vertices of the obstacle polygon:")
-for vertex in vertices:
-    print(vertex)
+obstacle_polygon = cartObst1 # Assuming there is only one obstacle polygon
 
 # Example usage
 free_nodes_path = boustrophedonTraversal(DARPgrid,obstacles)
@@ -324,8 +320,7 @@ def plot_points_and_path(pair, path, obstacle_polygon):
     ax.legend()
     plt.show()
 
-obstacle_polygon = cartObst1[0].tolist()
-
+obstacle_polygon = cartObst1
 # Create a list to store all paths of intersection points
 all_paths = []
 
@@ -400,9 +395,7 @@ def plot_path(main_path, inserted_paths, polygon_coords, obstacle_coords):
     poly = patches.Polygon(polygon_coords, fill=None, edgecolor='purple')
     ax.add_patch(poly)
 
-    # Create a polygon for the obstacle and add it to the plot
-    obstacle_poly = patches.Polygon(obstacle_coords[0], fill=True, color='grey', alpha=0.5)
-    ax.add_patch(obstacle_poly)
+
 
     # Show the plot
     plt.show()
@@ -422,124 +415,7 @@ print("wgs_coords are: ", wgs_coords)
 all_paths = [tuple(point) if isinstance(point, list) else point for sublist in all_paths for point in sublist]
 
 wgs_coords_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([all_paths])
-def rotateBackWaypoints(optimalTheta, iWaypoints):
-    minusTheta = -optimalTheta
 
-    l = len(iWaypoints)
-    waypoints = []
-
-    for i in range(l):
-        a = iWaypoints[i][0] * math.cos(math.radians(minusTheta)) - iWaypoints[i][1] * math.sin(
-            math.radians(minusTheta))
-        b = iWaypoints[i][0] * math.sin(math.radians(minusTheta)) + iWaypoints[i][1] * math.cos(
-            math.radians(minusTheta))
-        waypoints.append([a, b])
-
-    return waypoints
-
-[cart2, cartObst2] = real_world_parameters.geo2cart2()
-
-print("Cart2:", cart2)
-print("CartObst: ", cartObst2)
-print("MegaNodes: ", real_world_parameters.megaNodes)
-
-
-rows, cols, obstacles_positions = real_world_parameters.get_DARP_params()
-DARPgrid_r = initializeDARPGrid(
-                          real_world_parameters.megaNodes)
-
-
-print(DARPgrid_r)
-
-obstacles_r = [(i, j) for i in range(DARPgrid_r.shape[0]) for j in range(DARPgrid_r.shape[1]) if DARPgrid_r[i][j] == 1]
-
-obstacle_polygon = cartObst2[0] # Assuming there is only one obstacle polygon
-vertices = obstacle_polygon.tolist()
-print("Vertices of the obstacle polygon:")
-for vertex in vertices:
-    print(vertex)
-
-# Example usage
-free_nodes_path_r = boustrophedonTraversal(DARPgrid_r,obstacles_r)
-print("Free Nodes Path:")
-print(free_nodes_path_r)
-
-# Call the function to get the matched free nodes path
-matched_coords_r = get_matched_free_nodes_path(free_nodes_path_r, real_world_parameters.megaNodes)
-print(matched_coords_r)
-
-grid_lines_r = extract_x_coordinates(real_world_parameters.megaNodes)
-print("Grid Lines:")
-print(grid_lines)
-
-intersection_points = find_intersection_points(grid_lines_r, obstacle_polygon)
-print("Intersection Points:")
-for point in intersection_points:
-    print(point)
-
-obstacle_polygon = cartObst2[0].tolist()
-
-# Create a list to store all paths of intersection points
-all_paths_r = []
-
-# Iterate through each pair of points and find the shortest path
-for i in range(0, len(intersection_points), 2):
-    pair = intersection_points[i:i + 2]
-    path = find_minimum_distance_path(pair, obstacle_polygon)
-    all_paths_r.append(path)  # Append the path to the list of all_paths
-    print_path_info(pair, path)
-    plot_points_and_path(pair, path, obstacle_polygon)
-
-
-print(all_paths_r)
-
-# Test the function
-updated_path_r = insert_paths(matched_coords_r, all_paths_r)
-print("updated_path_r",updated_path_r)
-
-# Use the function
-plot_path(updated_path_r, all_paths_r, cart2, cartObst2)
-
-
-rotated_p = rotateBackWaypoints(90 , updated_path_r)
-print("rotated_path" , rotated_p)
-wgs_coords_r = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([rotated_p])
-
-
-# Flatten the list and convert inner lists to tuples
-all_paths_r = [tuple(point) if isinstance(point, list) else point for sublist in all_paths_r for point in sublist]
-all_paths_r = rotateBackWaypoints(real_world_parameters.theta , all_paths_r)
-wgs_coords_r_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([all_paths_r])
-
-
-# Split paths into X and Y components
-x1, y1 = zip(*rotated_p)
-x2, y2 = zip(*updated_path)
-
-# Extracting the X and Y coordinates of the polygon 'Cart1'
-x3, y3 = zip(*cart1)
-x3 = x3 + (x3[0],)  # Appending the first x-coordinate to close the polygon
-y3 = y3 + (y3[0],)  # Appending the first y-coordinate to close the polygon
-
-plt.figure()
-
-# Plot the two paths
-plt.plot(x1, y1, label='Rotated Path', color='blue')
-plt.plot(x2, y2, label='Updated Path', color='red')
-
-# Plot the polygon 'Cart1'
-plt.plot(x3, y3, label='Cart1 Polygon', color='green', linestyle='--', marker='o')
-
-# Optional: Add titles, labels, etc.
-plt.title('Coverage Path Planning')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.legend()
-plt.grid(True)
-
-# Setting equal scaling for the axes
-plt.axis('equal')
-plt.show()
 
 #JSON FILE
 # Prepare the list of points as dictionaries
@@ -549,10 +425,9 @@ plt.show()
 obstacle_polygon = list(chain.from_iterable(real_world_parameters.geoObstacles))
 
 
-
 # Create an instance of the ConvCoords class with your geographic reference
 conv_coords = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles)
-
+print("cart1",cart1)
 # Convert the Cartesian coordinates (cart) to WGS-84 coordinates
 cart1 = conv_coords.NEDToWGS841_a(cart1)
 
@@ -565,11 +440,11 @@ obstacle_polygon = conv_coords.NEDToWGS841_a(obstacle_polygon)
 
 obstacle_polygon = [{"lat": lat[0][0], "lng": lat[0][1]} for lat in obstacle_polygon]
 print("obstacle_polygon", obstacle_polygon)
+
+
 # Flatten the list of lists into a single list of coordinate pairs
 wgs_coords_flat = [coord for sublist in wgs_coords for coord in sublist]
 
-# Flatten the list of lists into a single list of coordinate pairs for wgs_coords_r
-wgs_coords_r_flat = [coord for sublist in wgs_coords_r for coord in sublist]
 
 # Aggregate them into a list under "polygons"
 polygons = [
@@ -579,7 +454,7 @@ polygons = [
 obstacles = [
     {"points": obstacle_polygon}
 ]
-wgs_coords_f = wgs_coords_flat + wgs_coords_r_flat
+wgs_coords_f = wgs_coords_flat
 # Create the desired format for paths
 
 paths = [
@@ -613,15 +488,15 @@ print(json_string)
 
 
 # Flatten and make points unique (assumes your lists are similarly nested)
-flat_wgs_coords_r_obst_paths = {tuple(point) for sublist in wgs_coords_r_obst_paths for point in sublist}
+
 flat_wgs_coords_obst_paths = {tuple(point) for sublist in wgs_coords_obst_paths for point in sublist}
 
 # Flatten wgs_coords and wgs_coords_r
-flat_wgs_coords_r = [point for sublist in wgs_coords_r for point in sublist]
+
 flat_wgs_coords = [point for sublist in wgs_coords for point in sublist]
 
 # Generate total_path_combined
-total_path_combined = flat_wgs_coords_r +flat_wgs_coords
+total_path_combined =  flat_wgs_coords
 
 # Count occurrences of each point
 point_counter = Counter(map(tuple, total_path_combined))
@@ -636,11 +511,7 @@ total_path_combined_with_flags = []
 for point in total_path_combined:
     flag = True
     point_tuple = tuple(point)
-    if point_tuple in flat_wgs_coords_r_obst_paths:
-        print(f"Found in flat_wgs_coords_r_obst_paths: {point}, Count: {point_counter[point_tuple]}")
-        flag = False
-        count_falses += 1
-    elif point_tuple in flat_wgs_coords_obst_paths:
+    if point_tuple in flat_wgs_coords_obst_paths:
         print(f"Found in flat_wgs_coords_obst_paths: {point}, Count: {point_counter[point_tuple]}")
         flag = False
         count_falses += 1

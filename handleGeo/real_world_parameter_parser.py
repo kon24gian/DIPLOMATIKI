@@ -1,13 +1,11 @@
+
 import json
 import math
 import time
 import numpy as np
 from handleGeo.ConvCoords import ConvCoords
 from handleGeo.NodesInPoly import NodesInPoly
-from nodesPlacementOptimization.SimulatedAnnealing import SimulatedAnnealing
 from nodesPlacementOptimization.Rotate import Rotate
-
-
 class real_world:
     def __init__(self):
         """ DEFINE THE DRONE'S SPECS """
@@ -19,7 +17,8 @@ class real_world:
         self.SensorWidth = 13.2
         self.SensorHeight = 8
         self.FocalLength = 8.8
-
+        #self.VFOV = 2 * math.atan(self.SensorHeight / (2 * self.FocalLength))
+        self.VFOV = 45.7
         # RedEdge-M Image Sensor specs
         # HFOV = 46
         # hRes = 1280
@@ -32,7 +31,7 @@ class real_world:
         self.real_world_parameters()
 
     def real_world_parameters(self):
-        file = open('inputVariables_choosepath.json')
+        file = open('inputVariables_choosepath1.json')
         data = json.load(file)
 
         self.geoCoords = []
@@ -50,22 +49,16 @@ class real_world:
 
         self.altitude = data['altitude']
         self.sidelap = data['sidelap']
+        self.frontlap = data['frontlap']
+
 
         self.scanDist = float("{:.2f}".format(self.covered() * (1 - self.sidelap / 100)))
         print("Scanning Distance:", self.scanDist)
 
-        self.droneNo = data['droneNo']
-        self.portions = data['rPortions']
-        self.pathsStrictlyInPoly = data['pathsStrictlyInPoly']
-        self.optimal_init_pos = data['OptimalInitPos']
-        self.number_of_trials = 1000  # If OptimalInitPos define the number of trials
+        self.captDist = float("{:.2f}".format(self.covered_w() * (1 - self.frontlap / 100)))
+        print("Capturing Distance:", self.captDist)
 
-        self.randomInitPos = False  # If false define in WGS84 the initialPos of the drones
 
-        self.initial_positions = []
-
-        for i in data['initialPos']:
-            self.initial_positions.append([i.get("lat"), i.get("long")])
 
     def geo2cart(self):
         # Convert geographical to local cartesian coordinates
@@ -76,37 +69,30 @@ class real_world:
         else:
             self.obstNED = []  # [np.complex64(x) for x in range(0)]
 
-        # Rotation and shift optimization (SimulatedAnnealing)
-        start = time.time()
-        optimalParameters = SimulatedAnnealing()
-        optimalParameters.run(self.NED_Coords, self.obstNED, self.scanDist)
 
         self.rotate = Rotate()
-        self.theta = 0
-        self.shiftX = optimalParameters.getOptimalShiftX()
-        self.shiftY = optimalParameters.getOptimalShiftY()
+        self.theta =40
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 
 
         cartObst = [[] for _ in range(len(self.obstNED))]
 
+
         for i in range(len(self.obstNED)):
             cartObst[i] = self.rotate.rotatePolygon(self.obstNED[i])
 
-        print(f"Time needed to find the optimal solution: {time.time() - start} seconds")
-        print(f"-  theta: {self.theta}")
-        print(f"- Optimal shift in X axis: {self.shiftX}")
-        print(f"- Optimal shift in Y axis: {self.shiftY}")
 
+        print(f"-  theta: {self.theta}")
         # Build grid for paths
-        NodesInPoly_var = NodesInPoly(cart, cartObst, scanDist=self.scanDist,
-                                      pathsStrictlyInPoly=self.pathsStrictlyInPoly,
-                                      hideInfo=False, shiftX=self.shiftX, shiftY=self.shiftY)
+        # Build grid for paths
+        NodesInPoly_var = NodesInPoly(cart, cartObst, scanDist=self.scanDist, captDist=self.captDist,
+                                      hideInfo=False,)
 
         megaNodesIn = NodesInPoly_var.getMegaNodesInCount()
         self.megaNodes = NodesInPoly_var.getMegaNodes()
-        self.subNodes = NodesInPoly_var.getSubNodes()
+
+
 
         print(f"User's defined polygon area: {NodesInPoly_var.getPolygonArea()} square meters")
         return [cart , cartObst]
@@ -119,38 +105,27 @@ class real_world:
         else:
             self.obstNED = []  # [np.complex64(x) for x in range(0)]
 
-        # Rotation and shift optimization (SimulatedAnnealing)
-        start = time.time()
-        optimalParameters = SimulatedAnnealing()
-        optimalParameters.run(self.NED_Coords, self.obstNED, self.scanDist)
-
         self.rotate = Rotate()
-        self.theta = 90
-        self.shiftX = optimalParameters.getOptimalShiftX()
-        self.shiftY = optimalParameters.getOptimalShiftY()
+        self.theta = 130
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
-
-
 
         cartObst = [[] for _ in range(len(self.obstNED))]
 
         for i in range(len(self.obstNED)):
             cartObst[i] = self.rotate.rotatePolygon(self.obstNED[i])
 
-        print(f"Time needed to find the optimal solution: {time.time() - start} seconds")
+
         print(f"-  theta: {self.theta}")
-        print(f"- Optimal shift in X axis: {self.shiftX}")
-        print(f"- Optimal shift in Y axis: {self.shiftY}")
+
 
         # Build grid for paths
-        NodesInPoly_var = NodesInPoly(cart, cartObst, scanDist=self.scanDist,
-                                      pathsStrictlyInPoly=self.pathsStrictlyInPoly,
-                                      hideInfo=False, shiftX=self.shiftX, shiftY=self.shiftY)
+        NodesInPoly_var = NodesInPoly(cart, cartObst, scanDist=self.scanDist,captDist=self.captDist,
+                                      hideInfo=False)
 
         megaNodesIn = NodesInPoly_var.getMegaNodesInCount()
         self.megaNodes = NodesInPoly_var.getMegaNodes()
-        self.subNodes = NodesInPoly_var.getSubNodes()
+
 
         print(f"User's defined polygon area: {NodesInPoly_var.getPolygonArea()} square meters")
         return [cart , cartObst]
@@ -177,19 +152,21 @@ class real_world:
 
         return rows, cols, obs_pos
 
-    def GSD(self):
-        return ((2 * self.altitude * self.getTanFromDegrees(self.HFOV / 2)) / self.hRes) * 100
+
 
     def getTanFromDegrees(self, degrees):
         return math.tan(degrees * math.pi / 180)
 
+    #regarding dh
     def covered(self):
         return 2 * self.altitude * self.getTanFromDegrees(self.HFOV / 2)
 
+    #regarding dv
+    def covered_w(self):
+        return 2 * self.altitude * self.getTanFromDegrees(self.VFOV / 2)
     def GSDh(self):
         return ((self.altitude * 100) * (self.SensorHeight / 10)) / ((self.FocalLength / 10) * self.ImageHeight)
 
     def GSDw(self):
         return ((self.altitude * 100) * (self.SensorWidth / 10)) / ((self.FocalLength / 10) * self.ImageWidth)
-
 

@@ -1,7 +1,7 @@
 ﻿from handleGeo.coordinates import WGS84
 from handleGeo.coordinates.WGS84 import WGS84_class
 from handleGeo.coordinates.NED import NED
-from handleGeo.coordinates.ECEF import ECEF
+
 
 import math
 import numpy as np
@@ -65,6 +65,22 @@ class ConvCoords(object):
 
         return cartCoords
 
+    def NEDToWGS841_a(self, cartCoords):
+        local = []
+
+        for i in range(len(cartCoords)):
+            geoCoords = []
+            ned = NED(cartCoords[i][0], cartCoords[i][1], 0)
+            wgs84 = WGS84.displace(self.reference, ned)
+            # Round latitude and longitude to 5 decimal places
+            lat_degrees = round(math.degrees(wgs84.latitude), 5)
+            lon_degrees = round(math.degrees(wgs84.longitude), 5)
+            geoCoords.append([lat_degrees, lon_degrees])
+            local.append(geoCoords)
+
+        self.waypointsWGS84 = local
+
+        return self.waypointsWGS84
     def NEDToWGS84(self, cartCoords):
         # wgs84 = None
         # ned = None
@@ -76,6 +92,7 @@ class ConvCoords(object):
             geoCoords = []
             i = 0
             while i < len(cartCoords[j]):
+                print(f"j = {j}, i = {i}, cartCoords[j][i] = {cartCoords[j][i]}")
                 ned = NED(cartCoords[j][i][0], cartCoords[j][i][1], 0)
                 wgs84 = WGS84.displace(self.reference, ned)
                 geoCoords.append([math.degrees(wgs84.latitude), math.degrees(wgs84.longitude)])
@@ -98,8 +115,3 @@ class ConvCoords(object):
     def getPolygonNED(self):
         return self.polygonNED
 
-    def getWaypointsWGS84(self):
-        return self.waypointsWGS84
-
-    def getWaypointsNED(self):
-        return self.waypointsNED
