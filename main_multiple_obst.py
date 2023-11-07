@@ -448,8 +448,8 @@ print("wgs_coords are: ", wgs_coords)
 all_paths_combined = [tuple(point) if isinstance(point, list) else point for sublist in all_paths_combined for point in sublist]
 
 wgs_coords_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([all_paths_combined])
-def rotateBackWaypoints(optimalTheta, iWaypoints):
-    minusTheta = -optimalTheta
+def rotateBackWaypoints(Theta, iWaypoints):
+    minusTheta = -Theta
 
     l = len(iWaypoints)
     waypoints = []
