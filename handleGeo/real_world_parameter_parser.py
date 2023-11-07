@@ -31,7 +31,7 @@ class real_world:
         self.real_world_parameters()
 
     def real_world_parameters(self):
-        file = open('inputVariables_choosepath1.json')
+        file = open('orth.json')
         data = json.load(file)
 
         self.geoCoords = []
@@ -71,7 +71,7 @@ class real_world:
 
 
         self.rotate = Rotate()
-        self.theta =40
+        self.theta =45
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 
@@ -106,7 +106,7 @@ class real_world:
             self.obstNED = []  # [np.complex64(x) for x in range(0)]
 
         self.rotate = Rotate()
-        self.theta = 130
+        self.theta = 135
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 
