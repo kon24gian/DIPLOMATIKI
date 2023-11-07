@@ -91,8 +91,6 @@ class NodesInPoly(object):
         def getMegaNodes(self):
             return self.megaNodes
 
-        def getSubNodes(self):
-            return self.subNodes
 
 
         def getBoundingBoxArea(self):
@@ -104,5 +102,3 @@ class NodesInPoly(object):
         def getMegaNodes(self):
             return self.megaNodes
 
-        def getSubNodes(self):
-            return self.subNodes
