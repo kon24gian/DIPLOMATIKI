@@ -71,7 +71,7 @@ class real_world:
 
 
         self.rotate = Rotate()
-        self.theta =45
+        self.theta =  0
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 
@@ -106,7 +106,7 @@ class real_world:
             self.obstNED = []  # [np.complex64(x) for x in range(0)]
 
         self.rotate = Rotate()
-        self.theta = 135
+        self.theta = 90
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 

@@ -321,6 +321,7 @@ def plot_path(main_path, inserted_paths, polygon_coords, obstacles_coords):
     # Create the plot
     fig, ax = plt.subplots(figsize=(10, 10))
 
+
     # Plot the main path
     ax.plot(x_coords, y_coords, '-o', color='blue')
 
@@ -341,7 +342,20 @@ def plot_path(main_path, inserted_paths, polygon_coords, obstacles_coords):
 
     # Show the plot
     plt.show()
+def rotateBackWaypoints(Theta, iWaypoints):
+    minusTheta = -Theta
 
+    l = len(iWaypoints)
+    waypoints = []
+
+    for i in range(l):
+        a = iWaypoints[i][0] * math.cos(math.radians(minusTheta)) - iWaypoints[i][1] * math.sin(
+            math.radians(minusTheta))
+        b = iWaypoints[i][0] * math.sin(math.radians(minusTheta)) + iWaypoints[i][1] * math.cos(
+            math.radians(minusTheta))
+        waypoints.append([a, b])
+
+    return waypoints
 
 randomInitPos = True
 count = 0
@@ -436,10 +450,12 @@ for obstacle_polygon in obstacle_polygons:
 # Test the function with all paths
 updated_path = insert_paths(matched_coords_r, all_paths_combined)
 
+theta1 = real_world_parameters.theta
+
+
 # Use the function with all obstacle polygons
 plot_path(updated_path, all_paths_combined, cart1, cartObst1)
-
-
+updated_path = rotateBackWaypoints(theta1, updated_path)
 wgs_coords = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([updated_path])
 print("wgs_coords are: ", wgs_coords)
 
@@ -448,20 +464,7 @@ print("wgs_coords are: ", wgs_coords)
 all_paths_combined = [tuple(point) if isinstance(point, list) else point for sublist in all_paths_combined for point in sublist]
 
 wgs_coords_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([all_paths_combined])
-def rotateBackWaypoints(Theta, iWaypoints):
-    minusTheta = -Theta
 
-    l = len(iWaypoints)
-    waypoints = []
-
-    for i in range(l):
-        a = iWaypoints[i][0] * math.cos(math.radians(minusTheta)) - iWaypoints[i][1] * math.sin(
-            math.radians(minusTheta))
-        b = iWaypoints[i][0] * math.sin(math.radians(minusTheta)) + iWaypoints[i][1] * math.cos(
-            math.radians(minusTheta))
-        waypoints.append([a, b])
-
-    return waypoints
 
 [cart2, cartObst2] = real_world_parameters.geo2cart2()
 
@@ -542,9 +545,9 @@ updated_path_r = insert_paths(matched_coords_r, all_paths_combined_r)
 
 # Use the function with all obstacle polygons
 plot_path(updated_path_r, all_paths_combined_r, cart2, cartObst2)
+theta2 = 90 + theta1
 
-
-rotated_p = rotateBackWaypoints(90, updated_path_r)
+rotated_p = rotateBackWaypoints(theta2 , updated_path_r)
 print("rotated_path" , rotated_p)
 wgs_coords_r = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([rotated_p])
 
@@ -555,11 +558,11 @@ wgs_coords_r_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world
 
 
 # Split paths into X and Y components
-x1, y1 = zip(*rotated_p)
-x2, y2 = zip(*updated_path)
-
+y1,x1 = zip(*rotated_p)
+y2,x2 = zip(*updated_path)
+cart1 = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).polygonWGS84ToNED()
 # Extracting the X and Y coordinates of the polygon 'Cart1'
-x3, y3 = zip(*cart1)
+y3, x3 = zip(*cart1)
 x3 = x3 + (x3[0],)  # Appending the first x-coordinate to close the polygon
 y3 = y3 + (y3[0],)  # Appending the first y-coordinate to close the polygon
 
@@ -616,7 +619,7 @@ wgs_coords_flat = [coord for sublist in wgs_coords for coord in sublist]
 
 # Flatten the list of lists into a single list of coordinate pairs for wgs_coords_r
 wgs_coords_r_flat = [coord for sublist in wgs_coords_r for coord in sublist]
-wgs_coords_f = wgs_coords_flat + wgs_coords_r_flat
+wgs_coords_f =  wgs_coords_r_flat + wgs_coords_flat
 
 # Convert the area polygon to WGS-84 format
 cart1 = conv_coords.NEDToWGS841_a(cart1)
@@ -624,7 +627,7 @@ print("cart1", cart1)
 
 
 # Convert the coordinates to the desired format
-area_polygon = [{"lat": lat[0][0], "lng": lat[0][1]} for lat in cart1]
+area_polygon = [{"lat": coord[0], "lng": coord[1]} for coord in real_world_parameters.geoCoords]
 
 
 # Append the area polygon to the list of polygons
