@@ -10,10 +10,10 @@ class real_world:
     def __init__(self):
         """ DEFINE THE DRONE'S SPECS """
         # # Phantom 4 pro Image Sensor specs
-        self.HFOV = 73.4
-        self.hRes = 5472
+        self.HFOV = 73.7
+        #self.hRes = 5472
         self.ImageWidth = 5472
-        self.ImageHeight = 3648
+        self.ImageHeight = 3078
         self.SensorWidth = 13.2
         self.SensorHeight = 8
         self.FocalLength = 8.8
@@ -71,7 +71,7 @@ class real_world:
 
 
         self.rotate = Rotate()
-        self.theta =  0
+        self.theta =  62
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 
@@ -106,7 +106,7 @@ class real_world:
             self.obstNED = []  # [np.complex64(x) for x in range(0)]
 
         self.rotate = Rotate()
-        self.theta = 90
+        self.theta = 152
         self.rotate.setTheta(self.theta)
         cart = self.rotate.rotatePolygon(self.NED_Coords)
 

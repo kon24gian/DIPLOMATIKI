@@ -1,7 +1,7 @@
 {
-  "altitude": 44.72,
+  "altitude": 60,
   "sidelap": 70,
-  "frontlap" : 70,
+  "frontlap" : 40,
   "polygon": [
     {
       "lat": 40.93671,
@@ -12,7 +12,7 @@
       "long": 24.41371
     },
     {
-      "lat": 40.9429,
+      "lat": 40.9469,
       "long": 24.41579
     },
     {

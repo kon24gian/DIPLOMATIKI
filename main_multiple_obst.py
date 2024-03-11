@@ -4,14 +4,15 @@ sys.path.append('DARP')
 import matplotlib.patches as patches
 import random
 import sys
-import numpy as np
-import matplotlib.pyplot as plt
 sys.path.append('DARP')
 from handleGeo.ConvCoords import ConvCoords
 from handleGeo.real_world_parameter_parser import real_world
 import math
+import time
+import matplotlib.pyplot as plt
+import numpy as np
 
-def plotDARPGridWithNodesAndPath(cart, cartObst, megaNodes, path, intersection_points, obstacle_polygon):
+def plotDARPGridWithNodesAndPath(cart, cartObst, megaNodes,   obstacle_polygon):
     # Plot DARP grid
     plt.figure()
     plt.plot(cart[:, 1], -cart[:, 0] + np.max(cart[:, 0]), '-k', label='DARP Grid')
@@ -33,29 +34,24 @@ def plotDARPGridWithNodesAndPath(cart, cartObst, megaNodes, path, intersection_p
             else:
                 plt.plot(megaNodes[i][j][1], -megaNodes[i][j][0] + np.max(cart[:, 0]), 'bo')  # Free mega node
 
-    # Plot path
-    if len(megaNodes) >= 1:
-        path_x = [megaNodes[node[0]][node[1]][1] for node in path]
-        path_y = [-megaNodes[node[0]][node[1]][0] + np.max(cart[:, 0]) for node in path]
-        plt.plot(path_x, path_y, '-g', label='Path')
 
-    # Plot intersection points
-    if intersection_points:
-        intersection_x = [point[1] for point in intersection_points]
-        intersection_y = [-point[0] + np.max(cart[:, 0]) for point in intersection_points]
-        plt.plot(intersection_x, intersection_y, 'o', color='purple', label='Intersection Points')
+
 
     # Plot vertices of the obstacle polygon
-    if obstacle_polygon:
+    if obstacle_polygon.any():
         vertex_x = [vertex[1] for vertex in obstacle_polygon]
         vertex_y = [-vertex[0] + np.max(cart[:, 0]) for vertex in obstacle_polygon]
         plt.plot(vertex_x, vertex_y, 'o', color='yellow', label='Obstacle Vertices')
 
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
-    plt.title('DARP Grid with Nodes and Path')
+    plt.title('Grid')
     plt.legend()
     plt.show()
+
+
+
+
 def initializeDARPGrid(megaNodes):
         DARPgrid = megaNodes[:, :, 2].astype(int)
 
@@ -357,6 +353,8 @@ def rotateBackWaypoints(Theta, iWaypoints):
 
     return waypoints
 
+
+
 randomInitPos = True
 count = 0
 
@@ -456,6 +454,7 @@ theta1 = real_world_parameters.theta
 # Use the function with all obstacle polygons
 plot_path(updated_path, all_paths_combined, cart1, cartObst1)
 updated_path = rotateBackWaypoints(theta1, updated_path)
+print ("|update path " , updated_path)
 wgs_coords = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([updated_path])
 print("wgs_coords are: ", wgs_coords)
 
@@ -464,8 +463,8 @@ print("wgs_coords are: ", wgs_coords)
 all_paths_combined = [tuple(point) if isinstance(point, list) else point for sublist in all_paths_combined for point in sublist]
 
 wgs_coords_obst_paths = ConvCoords(real_world_parameters.geoCoords, real_world_parameters.geoObstacles).NEDToWGS84([all_paths_combined])
-
-
+updated_path_tuples = [(int(coord[0]), int(coord[1])) for coord in updated_path]
+#plotDARPGridWithNodesAndPath(cart1, cartObst1,real_world_parameters.megaNodes,obstacle_polygon )
 [cart2, cartObst2] = real_world_parameters.geo2cart2()
 
 print("Cart2:", cart2)
@@ -700,46 +699,156 @@ print(f"Total True Count: {count_trues}")
 
 
 # Now total_path_combined_with_flags should contain the points with flags
-print(total_path_combined_with_flags)
+print("total_path_with_flags",total_path_combined_with_flags)
 
 
+
+
+
+# Debug counters
+count_falses = 0
+count_trues = 0
+
+# Initialize lists to store flags for flat_wgs_coords_r and flat_wgs_coords
+flags_flat_wgs_coords_r = []
+flags_flat_wgs_coords = []
+
+# Add flags to each point in total_path_combined
+for point in total_path_combined:
+    flag = True
+    point_tuple = tuple(point)
+    if point_tuple in flat_wgs_coords_r_obst_paths:
+        print(f"Found in flat_wgs_coords_r_obst_paths: {point}, Count: {point_counter[point_tuple]}")
+        flag = False
+        count_falses += 1
+    elif point_tuple in flat_wgs_coords_obst_paths:
+        print(f"Found in flat_wgs_coords_obst_paths: {point}, Count: {point_counter[point_tuple]}")
+        flag = False
+        count_falses += 1
+    else:
+        count_trues += 1
+
+    # Append the point with flag to the corresponding list
+    if point in flat_wgs_coords_r:
+        flags_flat_wgs_coords_r.append([*point, flag])
+    elif point in flat_wgs_coords:
+        flags_flat_wgs_coords.append([*point, flag])
+
+# Print the total counts
+print(f"Total False Count: {count_falses}")
+print(f"Total True Count: {count_trues}")
+
+# Now flags_flat_wgs_coords_r and flags_flat_wgs_coords contain the points with flags
+print("flat_wgs_coords_r_with_flags:", flags_flat_wgs_coords_r)
+print("flat_wgs_coords_with_flags:", flags_flat_wgs_coords)
 
 paths = []
 path_id = 0  # Assuming a single path, you could loop over multiple paths and increment this
 
 # Convert your coordinates into the desired format
-waypoints = []
-for lat, lng, photo in total_path_combined_with_flags:
-    waypoints.append({
+waypoints_1 = []
+for i, (lat, lng, photo) in enumerate(flags_flat_wgs_coords, start=1):
+    waypoints_1.append({
+        "id": i,
         "latitude": lat,
         "longitude": lng,
         "altitude": real_world_parameters.altitude,
-        "heading": None,
-        "photo": photo
     })
 
-# Create a path dictionary for this pathID
-path_dict = {
-    "pathID": path_id,
-    "photomode": "viewpoint",  # Replace with your actual data if available
-    "waypoints": waypoints
-}
+# Convert your coordinates into the desired format
+# Convert your coordinates into the desired format for photo points with flag True
+photo_points_1 = [
+    {
+        "id": i,
+        "rotateAircraft": False
+    }
+    for i, (lat, lng, photo) in enumerate(flags_flat_wgs_coords, start=1) if photo
+]
 
-paths.append(path_dict)
+waypoints_2 = []
+for i, (lat, lng, photo) in enumerate(flags_flat_wgs_coords_r, start=1):
+    waypoints_2.append({
+        "id": i,
+        "latitude": lat,
+        "longitude": lng,
+        "altitude": real_world_parameters.altitude,
+    })
+
+# Convert your coordinates into the desired format
+# Convert your coordinates into the desired format for photo points with flag True
+photo_points_2 = [
+    {
+        "id": i,
+        "rotateAircraft": False
+    }
+    for i, (lat, lng, photo) in enumerate(flags_flat_wgs_coords_r, start=1) if photo
+]
+
 
 # Prepare the final JSON structure
 json_data = {
-    "sender": "Alert-driven_UAV_path_planning",
-    "dateTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
-    "horizontal_speed": 5,
-    "paths": paths  # Add the paths
+
+    "timestamp": int(time.time() * 1000),  # Convert to Unix timestamp in milliseconds
+    #   "missionId": "3ac1d261-48ff-405c-a349-0f13186311e8",
+"destinationSystem": "dji.phantom.4.pro.hawk.1",
+    "sourceSystem": "choosepath-backend",
+    "mission": {
+        "type": "WAYPOINT_MISSION",
+        "flightPathMode": "NORMAL",
+        "finishedAction": "GO_HOME",
+        "speed": 3.0
+    },
+    "waypoints": waypoints_1,  # Add the paths
+    "camera": {
+        "gimbal pitch": -50,
+
+        "details": {
+            "type": "SHOOT_PHOTO_WAYPOINTS",
+            "photoWaypoints": photo_points_1
+        }
+    }
 }
 
 # Convert dictionary to JSON string
 json_string = json.dumps(json_data, indent=4)
 
 # Optionally, write to a file
-with open("path_data.json", "w") as f:
+with open("path_data_1.json", "w") as f:
+    f.write(json_string)
+
+# Print JSON string
+print(json_string)
+
+
+# Prepare the final JSON structure
+json_data = {
+
+    "timestamp": int(time.time() * 1000),  # Convert to Unix timestamp in milliseconds
+    #   "missionId": "3ac1d261-48ff-405c-a349-0f13186311e8",
+    "destinationSystem": "dji.phantom.4.pro.hawk.1",
+    "sourceSystem": "choosepath-backend",
+    "mission": {
+        "type": "WAYPOINT_MISSION",
+        "flightPathMode": "NORMAL",
+        "finishedAction": "GO_HOME",
+        "speed": 3.0
+    },
+    "waypoints": waypoints_2,  # Add the paths
+    "camera": {
+        "gimbal pitch": -50,
+
+        "details": {
+            "type": "SHOOT_PHOTO_WAYPOINTS",
+            "photoWaypoints": photo_points_2
+        }
+    }
+}
+
+# Convert dictionary to JSON string
+json_string = json.dumps(json_data, indent=4)
+
+# Optionally, write to a file
+with open("path_data_2.json", "w") as f:
     f.write(json_string)
 
 # Print JSON string

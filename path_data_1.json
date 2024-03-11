@@ -1,0 +1,1011 @@
+{
+    "timestamp": 1710148845211,
+    "destinationSystem": "dji.phantom.4.pro.hawk.1",
+    "sourceSystem": "choosepath-backend",
+    "mission": {
+        "type": "WAYPOINT_MISSION",
+        "flightPathMode": "NORMAL",
+        "finishedAction": "GO_HOME",
+        "speed": 3.0
+    },
+    "waypoints": [
+        {
+            "id": 1,
+            "latitude": 40.57293351960725,
+            "longitude": 22.995442209457075,
+            "altitude": 50
+        },
+        {
+            "id": 2,
+            "latitude": 40.57301724496846,
+            "longitude": 22.995500592429778,
+            "altitude": 50
+        },
+        {
+            "id": 3,
+            "latitude": 40.57310097029815,
+            "longitude": 22.995558975547453,
+            "altitude": 50
+        },
+        {
+            "id": 4,
+            "latitude": 40.5731846955963,
+            "longitude": 22.995617358810108,
+            "altitude": 50
+        },
+        {
+            "id": 5,
+            "latitude": 40.573268420862924,
+            "longitude": 22.995675742217745,
+            "altitude": 50
+        },
+        {
+            "id": 6,
+            "latitude": 40.57335214609799,
+            "longitude": 22.995734125770355,
+            "altitude": 50
+        },
+        {
+            "id": 7,
+            "latitude": 40.57343587130154,
+            "longitude": 22.99579250946794,
+            "altitude": 50
+        },
+        {
+            "id": 8,
+            "latitude": 40.57351959647354,
+            "longitude": 22.995850893310507,
+            "altitude": 50
+        },
+        {
+            "id": 9,
+            "latitude": 40.573603321614,
+            "longitude": 22.995909277298054,
+            "altitude": 50
+        },
+        {
+            "id": 10,
+            "latitude": 40.57368704672293,
+            "longitude": 22.995967661430583,
+            "altitude": 50
+        },
+        {
+            "id": 11,
+            "latitude": 40.573770771800305,
+            "longitude": 22.99602604570809,
+            "altitude": 50
+        },
+        {
+            "id": 12,
+            "latitude": 40.57384365960416,
+            "longitude": 22.995846276817357,
+            "altitude": 50
+        },
+        {
+            "id": 13,
+            "latitude": 40.57375993443769,
+            "longitude": 22.995787892699944,
+            "altitude": 50
+        },
+        {
+            "id": 14,
+            "latitude": 40.57367620923968,
+            "longitude": 22.995729508727514,
+            "altitude": 50
+        },
+        {
+            "id": 15,
+            "latitude": 40.573592484010135,
+            "longitude": 22.995671124900056,
+            "altitude": 50
+        },
+        {
+            "id": 16,
+            "latitude": 40.57350875874905,
+            "longitude": 22.99561274121758,
+            "altitude": 50
+        },
+        {
+            "id": 17,
+            "latitude": 40.57342503345641,
+            "longitude": 22.995554357680085,
+            "altitude": 50
+        },
+        {
+            "id": 18,
+            "latitude": 40.57334130813225,
+            "longitude": 22.995495974287564,
+            "altitude": 50
+        },
+        {
+            "id": 19,
+            "latitude": 40.573257582776556,
+            "longitude": 22.995437591040027,
+            "altitude": 50
+        },
+        {
+            "id": 20,
+            "latitude": 40.573173857389314,
+            "longitude": 22.995379207937464,
+            "altitude": 50
+        },
+        {
+            "id": 21,
+            "latitude": 40.57309013197054,
+            "longitude": 22.995320824979878,
+            "altitude": 50
+        },
+        {
+            "id": 22,
+            "latitude": 40.57300640652023,
+            "longitude": 22.995262442167267,
+            "altitude": 50
+        },
+        {
+            "id": 23,
+            "latitude": 40.573079293151956,
+            "longitude": 22.99508267448884,
+            "altitude": 50
+        },
+        {
+            "id": 24,
+            "latitude": 40.573163018691346,
+            "longitude": 22.995141057141357,
+            "altitude": 50
+        },
+        {
+            "id": 25,
+            "latitude": 40.573246744199196,
+            "longitude": 22.995199439938844,
+            "altitude": 50
+        },
+        {
+            "id": 26,
+            "latitude": 40.57333046967553,
+            "longitude": 22.995257822881317,
+            "altitude": 50
+        },
+        {
+            "id": 27,
+            "latitude": 40.573414195120314,
+            "longitude": 22.995316205968763,
+            "altitude": 50
+        },
+        {
+            "id": 28,
+            "latitude": 40.57349792053356,
+            "longitude": 22.995374589201184,
+            "altitude": 50
+        },
+        {
+            "id": 29,
+            "latitude": 40.57358164591527,
+            "longitude": 22.995432972578584,
+            "altitude": 50
+        },
+        {
+            "id": 30,
+            "latitude": 40.57366537126545,
+            "longitude": 22.995491356100967,
+            "altitude": 50
+        },
+        {
+            "id": 31,
+            "latitude": 40.57374909658409,
+            "longitude": 22.99554973976833,
+            "altitude": 50
+        },
+        {
+            "id": 32,
+            "latitude": 40.573832821871186,
+            "longitude": 22.99560812358067,
+            "altitude": 50
+        },
+        {
+            "id": 33,
+            "latitude": 40.57391654712674,
+            "longitude": 22.99566650753799,
+            "altitude": 50
+        },
+        {
+            "id": 34,
+            "latitude": 40.57400027235075,
+            "longitude": 22.99572489164029,
+            "altitude": 50
+        },
+        {
+            "id": 35,
+            "latitude": 40.574083997543234,
+            "longitude": 22.995783275887575,
+            "altitude": 50
+        },
+        {
+            "id": 36,
+            "latitude": 40.57416772270416,
+            "longitude": 22.995841660279837,
+            "altitude": 50
+        },
+        {
+            "id": 37,
+            "latitude": 40.57425144783355,
+            "longitude": 22.99590004481708,
+            "altitude": 50
+        },
+        {
+            "id": 38,
+            "latitude": 40.57433517293139,
+            "longitude": 22.99595842949931,
+            "altitude": 50
+        },
+        {
+            "id": 39,
+            "latitude": 40.5744188979977,
+            "longitude": 22.99601681432652,
+            "altitude": 50
+        },
+        {
+            "id": 40,
+            "latitude": 40.57450262303246,
+            "longitude": 22.996075199298716,
+            "altitude": 50
+        },
+        {
+            "id": 41,
+            "latitude": 40.57457551089736,
+            "longitude": 22.99589542851004,
+            "altitude": 50
+        },
+        {
+            "id": 42,
+            "latitude": 40.57449178577352,
+            "longitude": 22.99583704369794,
+            "altitude": 50
+        },
+        {
+            "id": 43,
+            "latitude": 40.574408060618126,
+            "longitude": 22.99577865903083,
+            "altitude": 50
+        },
+        {
+            "id": 44,
+            "latitude": 40.57432433543119,
+            "longitude": 22.995720274508695,
+            "altitude": 50
+        },
+        {
+            "id": 45,
+            "latitude": 40.57424061021271,
+            "longitude": 22.99566189013154,
+            "altitude": 50
+        },
+        {
+            "id": 46,
+            "latitude": 40.5741568849627,
+            "longitude": 22.995603505899375,
+            "altitude": 50
+        },
+        {
+            "id": 47,
+            "latitude": 40.57407315968113,
+            "longitude": 22.99554512181219,
+            "altitude": 50
+        },
+        {
+            "id": 48,
+            "latitude": 40.57398943436804,
+            "longitude": 22.99548673786998,
+            "altitude": 50
+        },
+        {
+            "id": 49,
+            "latitude": 40.57390570902339,
+            "longitude": 22.995428354072757,
+            "altitude": 50
+        },
+        {
+            "id": 50,
+            "latitude": 40.57382198364721,
+            "longitude": 22.995369970420512,
+            "altitude": 50
+        },
+        {
+            "id": 51,
+            "latitude": 40.573738258239494,
+            "longitude": 22.99531158691325,
+            "altitude": 50
+        },
+        {
+            "id": 52,
+            "latitude": 40.573654532800234,
+            "longitude": 22.995253203550966,
+            "altitude": 50
+        },
+        {
+            "id": 53,
+            "latitude": 40.57357080732944,
+            "longitude": 22.99519482033366,
+            "altitude": 50
+        },
+        {
+            "id": 54,
+            "latitude": 40.5734870818271,
+            "longitude": 22.99513643726133,
+            "altitude": 50
+        },
+        {
+            "id": 55,
+            "latitude": 40.573403356293234,
+            "longitude": 22.99507805433398,
+            "altitude": 50
+        },
+        {
+            "id": 56,
+            "latitude": 40.57331963072782,
+            "longitude": 22.99501967155161,
+            "altitude": 50
+        },
+        {
+            "id": 57,
+            "latitude": 40.573235905130886,
+            "longitude": 22.99496128891422,
+            "altitude": 50
+        },
+        {
+            "id": 58,
+            "latitude": 40.573152179502415,
+            "longitude": 22.9949029064218,
+            "altitude": 50
+        },
+        {
+            "id": 59,
+            "latitude": 40.57322506557158,
+            "longitude": 22.994723137966137,
+            "altitude": 50
+        },
+        {
+            "id": 60,
+            "latitude": 40.57330879128914,
+            "longitude": 22.994781520298453,
+            "altitude": 50
+        },
+        {
+            "id": 61,
+            "latitude": 40.57339251697517,
+            "longitude": 22.99483990277575,
+            "altitude": 50
+        },
+        {
+            "id": 62,
+            "latitude": 40.57347624262966,
+            "longitude": 22.994898285398026,
+            "altitude": 50
+        },
+        {
+            "id": 63,
+            "latitude": 40.57355996825262,
+            "longitude": 22.994956668165273,
+            "altitude": 50
+        },
+        {
+            "id": 64,
+            "latitude": 40.573643693844026,
+            "longitude": 22.995015051077505,
+            "altitude": 50
+        },
+        {
+            "id": 65,
+            "latitude": 40.57372741940391,
+            "longitude": 22.995073434134714,
+            "altitude": 50
+        },
+        {
+            "id": 66,
+            "latitude": 40.57381114493226,
+            "longitude": 22.9951318173369,
+            "altitude": 50
+        },
+        {
+            "id": 67,
+            "latitude": 40.57389487042905,
+            "longitude": 22.995190200684068,
+            "altitude": 50
+        },
+        {
+            "id": 68,
+            "latitude": 40.573978595894324,
+            "longitude": 22.995248584176213,
+            "altitude": 50
+        },
+        {
+            "id": 69,
+            "latitude": 40.57406232132805,
+            "longitude": 22.995306967813338,
+            "altitude": 50
+        },
+        {
+            "id": 70,
+            "latitude": 40.574146046730235,
+            "longitude": 22.995365351595453,
+            "altitude": 50
+        },
+        {
+            "id": 71,
+            "latitude": 40.574229772100885,
+            "longitude": 22.995423735522543,
+            "altitude": 50
+        },
+        {
+            "id": 72,
+            "latitude": 40.574313497439995,
+            "longitude": 22.99548211959461,
+            "altitude": 50
+        },
+        {
+            "id": 73,
+            "latitude": 40.57439722274755,
+            "longitude": 22.995540503811664,
+            "altitude": 50
+        },
+        {
+            "id": 74,
+            "latitude": 40.57448094802357,
+            "longitude": 22.9955988881737,
+            "altitude": 50
+        },
+        {
+            "id": 75,
+            "latitude": 40.57456467326805,
+            "longitude": 22.995657272680717,
+            "altitude": 50
+        },
+        {
+            "id": 76,
+            "latitude": 40.574648398480974,
+            "longitude": 22.99571565733272,
+            "altitude": 50
+        },
+        {
+            "id": 77,
+            "latitude": 40.5747212857833,
+            "longitude": 22.99553588576675,
+            "altitude": 50
+        },
+        {
+            "id": 78,
+            "latitude": 40.574637560481285,
+            "longitude": 22.995477501274845,
+            "altitude": 50
+        },
+        {
+            "id": 79,
+            "latitude": 40.574553835147725,
+            "longitude": 22.995419116927923,
+            "altitude": 50
+        },
+        {
+            "id": 80,
+            "latitude": 40.57447010978262,
+            "longitude": 22.99536073272599,
+            "altitude": 50
+        },
+        {
+            "id": 81,
+            "latitude": 40.574386384385974,
+            "longitude": 22.99530234866904,
+            "altitude": 50
+        },
+        {
+            "id": 82,
+            "latitude": 40.574302658957784,
+            "longitude": 22.995243964757062,
+            "altitude": 50
+        },
+        {
+            "id": 83,
+            "latitude": 40.574218933498045,
+            "longitude": 22.995185580990075,
+            "altitude": 50
+        },
+        {
+            "id": 84,
+            "latitude": 40.574135208006794,
+            "longitude": 22.995127197368063,
+            "altitude": 50
+        },
+        {
+            "id": 85,
+            "latitude": 40.57405148248398,
+            "longitude": 22.995068813891038,
+            "altitude": 50
+        },
+        {
+            "id": 86,
+            "latitude": 40.57396775692962,
+            "longitude": 22.995010430558988,
+            "altitude": 50
+        },
+        {
+            "id": 87,
+            "latitude": 40.57388403134373,
+            "longitude": 22.99495204737192,
+            "altitude": 50
+        },
+        {
+            "id": 88,
+            "latitude": 40.57412436879233,
+            "longitude": 22.99488904321723,
+            "altitude": 50
+        },
+        {
+            "id": 89,
+            "latitude": 40.574208094404234,
+            "longitude": 22.99494742653416,
+            "altitude": 50
+        },
+        {
+            "id": 90,
+            "latitude": 40.57429181998459,
+            "longitude": 22.99500580999607,
+            "altitude": 50
+        },
+        {
+            "id": 91,
+            "latitude": 40.5743755455334,
+            "longitude": 22.995064193602953,
+            "altitude": 50
+        },
+        {
+            "id": 92,
+            "latitude": 40.57445927105067,
+            "longitude": 22.995122577354827,
+            "altitude": 50
+        },
+        {
+            "id": 93,
+            "latitude": 40.5745429965364,
+            "longitude": 22.995180961251677,
+            "altitude": 50
+        },
+        {
+            "id": 94,
+            "latitude": 40.57462672199059,
+            "longitude": 22.995239345293516,
+            "altitude": 50
+        },
+        {
+            "id": 95,
+            "latitude": 40.57471044741324,
+            "longitude": 22.995297729480335,
+            "altitude": 50
+        },
+        {
+            "id": 96,
+            "latitude": 40.57479417280434,
+            "longitude": 22.99535611381214,
+            "altitude": 50
+        },
+        {
+            "id": 97,
+            "latitude": 40.57453215743408,
+            "longitude": 22.99494280565198,
+            "altitude": 50
+        },
+        {
+            "id": 98,
+            "latitude": 40.574448431827726,
+            "longitude": 22.994884422060213,
+            "altitude": 50
+        },
+        {
+            "id": 99,
+            "latitude": 40.574364706189826,
+            "longitude": 22.994826038613425,
+            "altitude": 50
+        }
+    ],
+    "camera": {
+        "gimbal pitch": -50,
+        "details": {
+            "type": "SHOOT_PHOTO_WAYPOINTS",
+            "photoWaypoints": [
+                {
+                    "id": 1,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 2,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 3,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 4,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 5,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 6,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 7,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 8,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 9,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 10,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 11,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 12,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 13,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 14,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 15,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 16,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 17,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 18,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 19,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 20,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 21,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 22,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 23,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 24,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 25,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 26,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 27,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 28,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 29,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 30,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 31,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 32,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 33,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 34,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 35,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 36,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 37,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 38,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 39,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 40,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 41,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 42,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 43,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 44,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 45,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 46,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 47,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 48,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 49,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 50,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 51,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 52,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 53,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 54,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 55,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 56,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 57,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 58,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 59,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 60,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 61,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 62,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 63,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 64,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 65,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 66,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 67,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 68,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 69,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 70,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 71,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 72,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 73,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 74,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 75,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 76,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 77,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 78,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 79,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 80,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 81,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 82,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 83,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 84,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 85,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 86,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 87,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 88,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 89,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 90,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 91,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 92,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 93,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 94,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 95,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 96,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 97,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 98,
+                    "rotateAircraft": false
+                },
+                {
+                    "id": 99,
+                    "rotateAircraft": false
+                }
+            ]
+        }
+    }
+}

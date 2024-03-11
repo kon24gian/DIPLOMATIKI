@@ -20,8 +20,8 @@ class NodesInPoly(object):
 
             self.x_nodeDistance = scanDist
             self.y_nodeDistance = captDist
-            self.nodeIntervalOffset = self.x_nodeDistance / 4  # Half the distance
 
+            self.nodeIntervalOffset = self.x_nodeDistance / 4  # Half the distance
             self.polygonCoordinates = cartCoords
             self.xMax = MinMax.xMax(self.polygonCoordinates) + self.x_nodeDistance
             self.xMin = MinMax.xMin(self.polygonCoordinates) - self.x_nodeDistance
