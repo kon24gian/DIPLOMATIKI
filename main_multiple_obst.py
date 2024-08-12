@@ -48,10 +48,6 @@ def plotDARPGridWithNodesAndPath(cart, cartObst, megaNodes,   obstacle_polygon):
     plt.title('Grid')
     plt.legend()
     plt.show()
-
-
-
-
 def initializeDARPGrid(megaNodes):
         DARPgrid = megaNodes[:, :, 2].astype(int)
 
@@ -107,7 +103,6 @@ def find_intersection_points(lines, obstacle_polygon):
                 intersection_points.append((x, intersect_y))
 
     return intersection_points
-
 def insert_intersection(polygon, p1, p2, intersection):
     index = polygon.index(p1)
     next_vertex = polygon[(index + 1) % len(polygon)]
@@ -155,7 +150,6 @@ def find_vertices_on_perimeter(start_vertex, end_vertex, obstacle_polygon):
     vertices_ccw.append(end_vertex)
 
     return vertices_cw, vertices_ccw
-
 # Modify the get_edge_from_intersection function
 def get_edge_from_intersection(point, obstacle_polygon):
     """Returns the edge (as a tuple of two vertices) of the obstacle_polygon
@@ -352,7 +346,6 @@ def rotateBackWaypoints(Theta, iWaypoints):
         waypoints.append([a, b])
 
     return waypoints
-
 
 
 randomInitPos = True
